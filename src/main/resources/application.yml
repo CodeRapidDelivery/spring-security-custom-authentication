@@ -1,0 +1,13 @@
+application:
+  web:
+    cors:
+      allowed-origins: "*"
+      allowed-methods: "*"
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 1800
+
+logging:
+  level:
+    com: DEBUG
+    org: DEBUG
