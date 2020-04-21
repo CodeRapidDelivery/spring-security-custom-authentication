@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class DepartmentAuthenticationProvider implements AuthenticationProvider {
     private final PasswordEncoder passwordEncoder;
     private final DomainUserDetailsService domainUserDetailsService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        var customAuthentication = (CustomAuthentication) authentication;
+        var customAuthentication = (DepartmentAuthentication) authentication;
         if (!"IT".equals(customAuthentication.getDepartment())) {
             throw new NotAllowedDepartmentException();
         }
@@ -28,18 +28,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Bad credentials");
         }
 
-        return new CustomAuthentication(userDetails, null, userDetails.getAuthorities());
+        return new DepartmentAuthentication(
+                customAuthentication.getDepartment(),
+                userDetails,
+                userDetails.getAuthorities()
+        );
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return CustomAuthentication.class.equals(authentication);
+        return DepartmentAuthentication.class.equals(authentication);
     }
 }
 
-class NotAllowedDepartmentException extends AuthenticationException {
-
-    public NotAllowedDepartmentException() {
-        super("Not allowed department");
-    }
-}

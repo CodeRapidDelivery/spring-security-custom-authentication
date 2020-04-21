@@ -3,7 +3,6 @@ package com.marbor.customauthentication.config;
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.Multimap;
 import com.marbor.customauthentication.resources.Routes;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -102,27 +101,37 @@ class WithAuthenticationOperationsScanner extends ApiListingScanner {
                 .parameters(List.of(
                         new ParameterBuilder()
                                 .name("username")
-                                .description("The username")
+                                .description("user login")
                                 .parameterType("query")
                                 .type(typeResolver.resolve(String.class))
                                 .modelRef(new ModelRef("string"))
                                 .build(),
                         new ParameterBuilder()
                                 .name("password")
-                                .description("The password")
+                                .description("user password")
                                 .parameterType("query")
                                 .type(typeResolver.resolve(String.class))
                                 .modelRef(new ModelRef("string"))
                                 .build(),
                         new ParameterBuilder()
                                 .name("department")
-                                .description("The department")
+                                .description("user department")
                                 .parameterType("query")
                                 .type(typeResolver.resolve(String.class))
                                 .modelRef(new ModelRef("string"))
                                 .build()
                         )
                 )
+                .responseMessages(Set.of(
+                        new ResponseMessageBuilder()
+                                .code(200)
+                                .message("{}")
+                                .build(),
+                        new ResponseMessageBuilder()
+                                .code(401)
+                                .message("Unauthorized")
+                                .build()
+                ))
                 .summary("Log in")
                 .notes("Here you can log in")
                 .build();

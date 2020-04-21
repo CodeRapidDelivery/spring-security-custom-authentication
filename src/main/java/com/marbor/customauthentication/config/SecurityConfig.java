@@ -1,6 +1,7 @@
 package com.marbor.customauthentication.config;
 
-import com.marbor.customauthentication.security.CustomAuthenticationProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marbor.customauthentication.security.DepartmentAuthenticationProvider;
 import com.marbor.customauthentication.security.DepartmentAuthFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,8 @@ import static com.marbor.customauthentication.resources.Routes.LOGOUT_ROUTE;
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
-    private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final DepartmentAuthenticationProvider departmentAuthenticationProvider;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -38,22 +40,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // for production ready app you wanna enable csrf support
             .disable()
             .addFilterAfter(corsFilter, CsrfFilter.class)
-            .addFilterBefore(new DepartmentAuthFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new DepartmentAuthFilter(authenticationManager(), objectMapper), UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling()
             .authenticationEntryPoint(((request, response, e) -> response.setStatus(401)))
             .accessDeniedHandler(((request, response, e) -> response.setStatus(403)))
-        .and()
-            .formLogin()
-            .loginProcessingUrl(LOGIN_ROUTE)
-            .successHandler(((request, response, authentication) -> response.setStatus(200)))
-            .failureHandler((request, response, e) -> response.sendError(401, "Authentication failed"))
-            .permitAll()
         .and()
             .logout()
             .logoutUrl(LOGOUT_ROUTE)
             .logoutSuccessHandler(getLogoutHandler())
         .and()
             .authorizeRequests()
+            .antMatchers(LOGIN_ROUTE).permitAll()
             .anyRequest().authenticated();
         //@formatter:on
     }
@@ -73,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(customAuthenticationProvider);
+        auth.authenticationProvider(departmentAuthenticationProvider);
     }
 
     private LogoutSuccessHandler getLogoutHandler() {
