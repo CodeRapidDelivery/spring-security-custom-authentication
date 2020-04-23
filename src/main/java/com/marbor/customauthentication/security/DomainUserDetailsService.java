@@ -2,6 +2,7 @@ package com.marbor.customauthentication.security;
 
 import com.marbor.customauthentication.domain.User;
 import com.marbor.customauthentication.repositories.UserRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -20,12 +20,12 @@ public class OnStartUpDataCreator implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        final Authority userAuthority = new Authority(AuthoritiesConstants.USER);
+        final var userAuthority = new Authority(AuthoritiesConstants.USER);
         authorityRepository.save(userAuthority);
 
         final var user = User.builder()
                 .login("john")
-                // password encrypted with bcrypt
+                // "password" encrypted with bcrypt
                 .password("$2a$10$DK0JxdpB5f9xMi1so/YkkeKOkWhO/alB01bIAYYjEkO4sL0FSpXCe")
                 .firstName("John")
                 .lastName("Smith")

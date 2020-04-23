@@ -1,8 +1,8 @@
 package com.marbor.customauthentication.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marbor.customauthentication.security.DepartmentAuthenticationProvider;
 import com.marbor.customauthentication.security.DepartmentAuthFilter;
+import com.marbor.customauthentication.security.DepartmentAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +22,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import static com.marbor.customauthentication.resources.Routes.LOGIN_ROUTE;
 import static com.marbor.customauthentication.resources.Routes.LOGOUT_ROUTE;
+import static javax.servlet.http.HttpServletResponse.*;
 
 @Configuration
 @EnableWebSecurity
@@ -42,12 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterAfter(corsFilter, CsrfFilter.class)
             .addFilterBefore(new DepartmentAuthFilter(authenticationManager(), objectMapper), UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling()
-            .authenticationEntryPoint(((request, response, e) -> response.setStatus(401)))
-            .accessDeniedHandler(((request, response, e) -> response.setStatus(403)))
+            .authenticationEntryPoint(((request, response, e) -> response.setStatus(SC_UNAUTHORIZED)))
+            .accessDeniedHandler(((request, response, e) -> response.setStatus(SC_FORBIDDEN)))
         .and()
             .logout()
             .logoutUrl(LOGOUT_ROUTE)
-            .logoutSuccessHandler(getLogoutHandler())
+            .logoutSuccessHandler(getLogoutSuccessHandler())
         .and()
             .authorizeRequests()
             .antMatchers(LOGIN_ROUTE).permitAll()
@@ -73,8 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(departmentAuthenticationProvider);
     }
 
-    private LogoutSuccessHandler getLogoutHandler() {
-        return (request, response, authentication) -> log.debug("{} logged out", authentication.getName());
+    private LogoutSuccessHandler getLogoutSuccessHandler() {
+        return (request, response, authentication) -> {
+            log.debug("{} logged out", authentication.getName());
+            response.setStatus(SC_OK);
+        };
     }
 }
 

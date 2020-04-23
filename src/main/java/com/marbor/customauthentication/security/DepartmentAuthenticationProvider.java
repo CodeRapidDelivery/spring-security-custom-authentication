@@ -18,12 +18,12 @@ public class DepartmentAuthenticationProvider implements AuthenticationProvider 
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        var customAuthentication = (DepartmentAuthentication) authentication;
+        final var customAuthentication = (DepartmentAuthentication) authentication;
         if (!"IT".equals(customAuthentication.getDepartment())) {
             throw new NotAllowedDepartmentException();
         }
 
-        final UserDetails userDetails = domainUserDetailsService.loadUserByUsername(customAuthentication.getPrincipal().toString());
+        final var userDetails = domainUserDetailsService.loadUserByUsername(customAuthentication.getPrincipal().toString());
         if (!passwordEncoder.matches(customAuthentication.getCredentials().toString(), userDetails.getPassword())) {
             throw new BadCredentialsException("Bad credentials");
         }
