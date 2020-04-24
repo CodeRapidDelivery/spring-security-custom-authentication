@@ -2,7 +2,7 @@ package com.marbor.customauthentication.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marbor.customauthentication.security.DepartmentAuthFilter;
-import com.marbor.customauthentication.security.DepartmentAuthenticationProvider;
+import com.marbor.customauthentication.security.DepartmentAuthProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,35 +17,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.web.filter.CorsFilter;
 
 import static com.marbor.customauthentication.resources.Routes.LOGIN_ROUTE;
 import static com.marbor.customauthentication.resources.Routes.LOGOUT_ROUTE;
-import static javax.servlet.http.HttpServletResponse.*;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final CorsFilter corsFilter;
-    private final DepartmentAuthenticationProvider departmentAuthenticationProvider;
+    private final DepartmentAuthProvider departmentAuthProvider;
     private final ObjectMapper objectMapper;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //@formatter:off
         http
-            .csrf()
-            // for production ready app you wanna enable csrf support
-            .disable()
-            .addFilterAfter(corsFilter, CsrfFilter.class)
+            .csrf().disable()
             .addFilterBefore(new DepartmentAuthFilter(authenticationManager(), objectMapper), UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling()
-            .authenticationEntryPoint(((request, response, e) -> response.setStatus(SC_UNAUTHORIZED)))
-            .accessDeniedHandler(((request, response, e) -> response.setStatus(SC_FORBIDDEN)))
-        .and()
             .logout()
             .logoutUrl(LOGOUT_ROUTE)
             .logoutSuccessHandler(getLogoutSuccessHandler())
@@ -71,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(departmentAuthenticationProvider);
+        auth.authenticationProvider(departmentAuthProvider);
     }
 
     private LogoutSuccessHandler getLogoutSuccessHandler() {
