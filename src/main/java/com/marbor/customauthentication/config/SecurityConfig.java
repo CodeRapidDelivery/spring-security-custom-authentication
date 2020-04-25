@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 import static com.marbor.customauthentication.resources.Routes.LOGIN_ROUTE;
 import static com.marbor.customauthentication.resources.Routes.LOGOUT_ROUTE;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 @Configuration
 @EnableWebSecurity
@@ -67,7 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LogoutSuccessHandler getLogoutSuccessHandler() {
         return (request, response, authentication) -> {
             log.debug("{} logged out", authentication.getName());
-            response.setStatus(SC_OK);
         };
     }
 }
