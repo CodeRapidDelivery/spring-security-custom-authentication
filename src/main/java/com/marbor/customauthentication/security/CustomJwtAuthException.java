@@ -2,10 +2,10 @@ package com.marbor.customauthentication.security;
 
 import org.springframework.http.HttpStatus;
 
-public class CustomException extends RuntimeException {
+public class CustomJwtAuthException extends RuntimeException {
    private final HttpStatus httpStatus;
 
-    public CustomException(String message, HttpStatus internalServerError) {
+    public CustomJwtAuthException(String message, HttpStatus internalServerError) {
         super(message);
         this.httpStatus = internalServerError;
     }

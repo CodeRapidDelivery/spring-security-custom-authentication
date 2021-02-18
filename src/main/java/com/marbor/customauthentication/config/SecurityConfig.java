@@ -3,6 +3,8 @@ package com.marbor.customauthentication.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marbor.customauthentication.security.DepartmentAuthFilter;
 import com.marbor.customauthentication.security.DepartmentAuthProvider;
+import com.marbor.customauthentication.security.JwtTokenFilterConfigurer;
+import com.marbor.customauthentication.security.JwtTokenOperations;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -28,21 +31,25 @@ import static com.marbor.customauthentication.resources.Routes.LOGOUT_ROUTE;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final DepartmentAuthProvider departmentAuthProvider;
     private final ObjectMapper objectMapper;
+    private final JwtTokenOperations jwtTokenOperations;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //@formatter:off
         http
             .csrf().disable()
-            .addFilterBefore(new DepartmentAuthFilter(authenticationManager(), objectMapper), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new DepartmentAuthFilter(authenticationManager(), objectMapper, jwtTokenOperations), UsernamePasswordAuthenticationFilter.class)
             .logout()
             .logoutUrl(LOGOUT_ROUTE)
             .logoutSuccessHandler(getLogoutSuccessHandler())
+        .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
             .antMatchers(LOGIN_ROUTE).permitAll()
             .anyRequest().authenticated();
         //@formatter:on
+        http.apply(new JwtTokenFilterConfigurer(jwtTokenOperations));
     }
 
     @Override

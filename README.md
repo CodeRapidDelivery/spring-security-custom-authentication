@@ -6,17 +6,16 @@
 #To test:
 To login:
 ```
-curl -v -c ./cookies -d "username=john" -d "password=password" -d "department=IT" http://localhost:8080/v1/api/login 
+curl -v -d "username=john" -d "password=password" -d "department=IT" http://localhost:8080/v1/api/login 
 ```
 
 Protected endpoint:
 ```
-curl -v -b ./cookies http://localhost:8080/v1/api/hello
+curl -v -H "Authorization: Bearer ${token}" http://localhost:8080/v1/api/hello
 ```
-
-To logout:
+Example:
 ```
-curl -v -b ./cookies http://localhost:8080/v1/api/logout
+ curl -v -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2huIiwiYXV0aCI6W10sImlhdCI6MTYxMzY1NzM5MCwiZXhwIjoxNjEzNjYwOTkwfQ.0yjSUqLb2Tm3lQakIovXiF0UOOJa07YIJQSXHYwobgM" http://localhost:8080/v1/api/hello
 ```
 
 swagger:

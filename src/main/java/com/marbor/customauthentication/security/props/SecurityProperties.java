@@ -1,2 +1,15 @@
-package com.marbor.customauthentication.security.props;public class SecurityProperties {
+package com.marbor.customauthentication.security.props;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ConfigurationProperties(prefix = "app.security.jwt")
+@Getter
+@Setter
+public class SecurityProperties {
+    private String secretKey;
+    private long expirationMs;
 }
