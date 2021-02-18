@@ -18,6 +18,8 @@
 		<java.version>11</java.version>
 		<springfox-swagger2.version>2.9.2</springfox-swagger2.version>
 		<jjwt.version>0.9.1</jjwt.version>
+		<springdoc.version>1.2.34</springdoc.version>
+		<swagger-annotations.version>2.1.0</swagger-annotations.version>
 	</properties>
 
 	<dependencies>
@@ -39,14 +41,21 @@
 			<version>${jjwt.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${springfox-swagger2.version}</version>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${springfox-swagger2.version}</version>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-data-rest</artifactId>
+			<version>${springdoc.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>${swagger-annotations.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

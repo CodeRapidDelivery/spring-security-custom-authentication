@@ -4,12 +4,12 @@
 ```
 
 #To test:
-To login:
+To get a jwt token:
 ```
 curl -v -d "username=john" -d "password=password" -d "department=IT" http://localhost:8080/v1/api/login 
 ```
 
-Protected endpoint:
+Call protected endpoint:
 ```
 curl -v -H "Authorization: Bearer ${token}" http://localhost:8080/v1/api/hello
 ```
@@ -20,7 +20,7 @@ Example:
 
 swagger:
 ```
-http://localhost:8080/swagger-ui.html#/
+http://localhost:8080/swagger-ui.html
 ```
 H2 console:
 ```
