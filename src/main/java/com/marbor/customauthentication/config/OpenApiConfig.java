@@ -18,9 +18,8 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(
-                        new Components().addSecuritySchemes(
-                                "JWT",
-                                getBearerSecurityScheme()))
+                        new Components()
+                                .addSecuritySchemes("JWT", getBearerSecurityScheme()))
                 .info(
                         new Info()
                                 .title("Custom authentication")
